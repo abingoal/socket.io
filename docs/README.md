@@ -11,4 +11,4 @@
 
 #### 进阶主题
 
-* [Emit cheatsheet](emit.md)
+* [Emit 备忘单](emit.md)
