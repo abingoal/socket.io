@@ -1,61 +1,58 @@
-
-## Emit cheatsheet
+## Emit 备忘单
 
 ```js
-
 io.on('connect', onConnect);
 
 function onConnect(socket){
 
-  // sending to the client
+  // 发送给客户端
   socket.emit('hello', 'can you hear me?', 1, 2, 'abc');
 
-  // sending to all clients except sender
+  // 发送给所有客户端(除了发送者)
   socket.broadcast.emit('broadcast', 'hello friends!');
 
-  // sending to all clients in 'game' room except sender
+  // 发送给所有在'game'房间中的客户端(除了发送者)
   socket.to('game').emit('nice game', "let's play a game");
 
-  // sending to all clients in 'game1' and/or in 'game2' room, except sender
+  // 发送给所有在'game1'和'game2'的客户端(除了发送者)
   socket.to('game1').to('game2').emit('nice game', "let's play a game (too)");
 
-  // sending to all clients in 'game' room, including sender
+  // 发送给所有在'game'房间中的客户端(包括发送者)
   io.in('game').emit('big-announcement', 'the game will start soon');
 
-  // sending to all clients in namespace 'myNamespace', including sender
+  // 发送给所有在命名空间'myNamespace'中的客户端(包括发送者)
   io.of('myNamespace').emit('bigger-announcement', 'the tournament will start soon');
 
-  // sending to a specific room in a specific namespace, including sender
+  // 发送给特定命名空间中的特定房间(包括发送者)
   io.of('myNamespace').to('room').emit('event', 'message');
 
-  // sending to individual socketid (private message)
+  // 发送给指定客户端 (私信)
   socket.to(<socketid>).emit('hey', 'I just met you');
 
-  // sending with acknowledgement
+  // 发送带有回执的消息
   socket.emit('question', 'do you think so?', function (answer) {});
 
-  // sending without compression
+  // 不压缩消息
   socket.compress(false).emit('uncompressed', "that's rough");
 
-  // sending a message that might be dropped if the client is not ready to receive messages
+  // 如果客户端不准备接收，则发送可能被丢弃的消息
   socket.volatile.emit('maybe', 'do you really need it?');
 
-  // sending to all clients on this node (when using multiple nodes)
+  // 发送到节点上的所有客户端(使用多节点情况下)
   io.local.emit('hi', 'my lovely babies');
-  
-  // sending to all connected clients
+
+  // 发送给所有连接的客户端
   io.emit('an event sent to all connected clients');
-
 };
-
 ```
 
-**Note:** The following events are reserved and should not be used as event names by your application:
-- `error`
-- `connect`
-- `disconnect`
-- `disconnecting`
-- `newListener`
-- `removeListener`
-- `ping`
-- `pong`
+**Note:** 以下事件名为保留字，不能以此作为自定义事件名
+
+* `error`
+* `connect`
+* `disconnect`
+* `disconnecting`
+* `newListener`
+* `removeListener`
+* `ping`
+* `pong`
