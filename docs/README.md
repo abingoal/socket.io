@@ -2,7 +2,7 @@
 
 #### 入门
 
-* [写一个聊天应用程序](http://socket.io/get-started/chat/)
+* [写一个聊天应用程序](chat.md)
 
 #### API 参考
 
