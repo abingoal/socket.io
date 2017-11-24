@@ -1,15 +1,14 @@
+## 目录
 
-## Table of Contents
+#### 入门
 
-#### Getting started
+* [写一个聊天应用程序](http://socket.io/get-started/chat/)
 
-  - [Write a chat application](http://socket.io/get-started/chat/)
+#### API 参考
 
-#### API Reference
+* [服务端 API](API.md)
+* [客户端 API](http://abingoal.com/socket.io-client/API.html)
 
-  - [Server API](API.md)
-  - [Client API](https://github.com/socketio/socket.io-client/blob/master/docs/API.md)
+#### 进阶主题
 
-#### Advanced topics
-
-  - [Emit cheatsheet](emit.md)
+* [Emit cheatsheet](emit.md)
