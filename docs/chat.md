@@ -6,18 +6,18 @@ Socket.IO 的知识点，所以很适合任何新手或者老油条。
 ## 简介
 
 使用流行的 Web 应用程序技术栈，如 LAMP（PHP ）等编写聊天应用程序非常困难。它涉及
-到轮询服务器的变化、时间戳追踪，因此效率比较低下。
+到轮询服务器的变化、时间戳追踪等，因此效率比较低下。
 
-传统上 Sockets 一直是大多数实时聊天系统所架构的解决方案，提供客户端与服务器之间
-的双向通信信道。
+Sockets 一直是大多数实时聊天系统所架构的解决方案，提供客户端与服务器之间的双向通
+信信道。
 
-这意味着服务器可以将消息推送到客户端。每当你发送一个聊天消息，首先让服务器接收，
-并推送到所有其他连接的客户端。
+这意味着服务器可以将消息推送到客户端。因此每当你发送一个聊天消息给服务端，它就会
+把该消息推送到所有其他连接的客户端。
 
 ## Web 框架
 
-首先需要一个简单的 HTML 网页，提供一个表单和一个消息列表。为此我们将使用 Node.JS
-Web 框架。
+首先需要一个简单的 HTML 网页，提供一个表单和一个消息列表。此例子我们将使用
+Node.JS Web 框架。
 
 然后创建一个描述我们项目的 package.json 清单文件。我建议你把它放在一个专门的空目
 录（我把我的例子命名为 chat-example）。
@@ -31,7 +31,7 @@ Web 框架。
 }
 ```
 
-为了方便的管理依赖，我们使用 npm install --save 来安装。
+为了方便管理依赖，我们使用`npm install --save` 来安装。
 
 ```bash
 npm install --save express@4.15.2
@@ -50,25 +50,25 @@ http.listen(3000, function() {
 });
 ```
 
-This translates into the following:
+以上代码的解释：
 
-1. Express initializes app to be a function handler that you can supply to an
-   HTTP server (as seen in line 2).
-2. We define a route handler / that gets called when we hit our website home.
-3. We make the http server listen on port 3000. If you run `node index.js` you
-   should see the following: ![chat-1](https://socket.io/assets/img/chat-1.png)
+1. `Express` 将应用程序初始化为可以提供给 `HTTP` 服务器的函数处理程序 ( 如第二行
+   所示 )。
+2. 然后定义一个路由 `/` 以便在访问首页的时候被调用。
+3. 最后在 3000 端口上进行 http 服务监听。输入`node index.js` 运行程序，你将会看
+   到如下所示： ![chat-1](https://socket.io/assets/img/chat-1.png)
 
-And if you point your browser to `http://localhost:3000`:
+在浏览器中输入 `http://localhost:3000`即可看到如下页面 :
 
 ![chat-2](https://socket.io/assets/img/chat-2.png)
 
-## Serving HTML
+## 提供 HTML
 
-So far in `index.js` we’re calling `res.send` and pass it a HTML string. Our
-code would look very confusing if we just placed our entire application’s HTML
-there. Instead, we’re going to create a `index.html` file and serve it.
+目前为止，在`index.js`中，我们调用`res.send`并传递一个 HTML 字符串。但是如果我们
+都是以此字符串的方式提供 HTML，代码看起来会非常混乱。因此我们要创建一
+个`index.html`文件并提供给程序进行渲染。
 
-Let’s refactor our route handler to use `sendFile` instead:
+重构路由使用`sendFile`来代替`send`。
 
 ```javascript
 app.get("/", function(req, res) {
@@ -76,7 +76,7 @@ app.get("/", function(req, res) {
 });
 ```
 
-And populate index.html with the following:
+然后添加如下 Html 代码 :
 
 ```html
 <!doctype html>
@@ -97,33 +97,31 @@ And populate index.html with the following:
   <body>
     <ul id="messages"></ul>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input id="m" autocomplete="off" /><button>发送</button>
     </form>
   </body>
 </html>
 ```
 
-If you restart the process (by hitting Control+C and running node index again)
-and refresh the page it should look like this:
-![chat-3](https://socket.io/assets/img/chat-3.png)
+在命令行中按下 Control+C 结束此前的进程，然后重新运行，刷新页面之后将会看到如下
+页面： ![chat-3](https://socket.io/assets/img/chat-3.png)
 
-## Integrating Socket.IO
+## 整合 Socket.IO
 
-Socket.IO is composed of two parts:
+Socket.IO 由两部分组成 :
 
-* A server that integrates with (or mounts on) the Node.JS HTTP Server:
-  `socket.io`
-* A client library that loads on the browser side: `socket.io-client`
+* Node.JS 服务端所需要的：`socket.io`
+* 浏览器端需要的客户端库：`socket.io-client`
 
-During development, `socket.io` serves the client automatically for us, as we’ll
-see, so for now we only have to install one module:
+开发过程中`socket.io`会给我们自动提供客户端库，因此我们只需要安装一个模块就可以
+：
 
 ```bash
 npm install --save socket.io
 ```
 
-That will install the module and add the dependency to `package.json`. Now let’s
-edit index.js to add it:
+该命令安装的同时也会在`package.json`中添加依赖。接下来编辑`index.js`, 添加如下代
+码：
 
 ```javascript
 var app = require("express")();
@@ -143,11 +141,10 @@ http.listen(3000, function() {
 });
 ```
 
-Notice that I initialize a new instance of socket.io by passing the http (the
-HTTP server) object. Then I listen on the connection event for incoming sockets,
-and I log it to the console.
+通过传递 http 服务来初始化一个新的 socket.io 实例。 然后监听 sockets 的连接事件
+，并在控制台中输出一个字符串。
 
-Now in index.html I add the following snippet before the `</body>`:
+编辑`index.html`，将以下代码添加到`</body>`元素前 :
 
 ```javascript
 <script src="/socket.io/socket.io.js"></script>
@@ -157,17 +154,15 @@ Now in index.html I add the following snippet before the `</body>`:
 </script>
 ```
 
-That’s all it takes to load the socket.io-client, which exposes a io global, and
-then connect.
+这段代码会加载`socket.io-client`客户端脚本，并向外暴露出一个全局的 io，然后使用
+此 io 进行连接。
 
-Notice that I’m not specifying any URL when I call io(), since it defaults to
-trying to connect to the host that serves the page.
+可以看到在调用 io() 时没有指定任何 URL，因为它默认为连接到本机服务器。
 
-If you now reload the server and the website you should see the console print “a
-user connected”. Try opening several tabs, and you’ll see several messages:
-![chat-4](https://socket.io/assets/img/chat-4.png)
+现在重启服务器并刷新网站，就可以看到控制台打印的`a user connected`。 尝试多打开
+几个标签，你会看到几个消息： ![chat-4](https://socket.io/assets/img/chat-4.png)
 
-Each socket also fires a special disconnect event:
+每个 socket 都会触发一个断开事件 :
 
 ```javascript
 io.on("connection", function(socket) {
@@ -178,19 +173,19 @@ io.on("connection", function(socket) {
 });
 ```
 
-Then if you refresh a tab several times you can see it in action:
+那么如果你多次刷新同一个标签，你可以看到以下行为：
 
 ![chat-5](https://socket.io/assets/img/chat-5.png)
 
-## Emitting events
+## 发送事件
 
-The main idea behind Socket.IO is that you can send and receive any events you
-want, with any data you want. Any objects that can be encoded as JSON will do,
-and binary data is supported too.
+Socket.IO 的设计思想是你可以在发送和接收任何事件时附加任何数据。 该数据可以为
+JSON 对象，也可以是二进制数据。
 
-Let’s make it so that when the user types in a message, the server gets it as a
-chat message event. The scripts section in index.html should now look as
-follows:
+接下来我们将做这个例子，当用户输入信息时，服务器将其作为一个 chat message event
+发送给服务端。
+
+修改 `index.html` 中的脚本，如下所示：
 
 <script src="/socket.io/socket.io.js"></script>
 
@@ -207,7 +202,7 @@ follows:
   });
 </script>
 
-And in index.js we print out the chat message event:
+打印 chat message event
 
 ```javascript
 io.on("connection", function(socket) {
@@ -217,21 +212,17 @@ io.on("connection", function(socket) {
 });
 ```
 
-The result should be like the following video:
+## 广播
 
-## Broadcasting
+接下来让我们从服务器发送事件到其余的用户。
 
-The next goal is for us to emit the event from the server to the rest of the
-users.
-
-In order to send an event to everyone, Socket.IO gives us the io.emit:
+为了方便向所有用户发送事件，Socket.IO 给我们提供了 io.emit：
 
 ```javascript
 io.emit("some event", { for: "everyone" });
 ```
 
-If you want to send a message to everyone except for a certain socket, we have
-the broadcast flag:
+如果你想发消息给某个用户之外的所有用户，可以使用`broadcast`来发送。
 
 ```javascript
 io.on("connection", function(socket) {
@@ -239,8 +230,7 @@ io.on("connection", function(socket) {
 });
 ```
 
-In this case, for the sake of simplicity we’ll send the message to everyone,
-including the sender.
+下面的代码表示给所有人发送消息，包括发送者
 
 ```javascript
 io.on("connection", function(socket) {
@@ -250,8 +240,8 @@ io.on("connection", function(socket) {
 });
 ```
 
-And on the client side when we capture a chat message event we’ll include it in
-the page. The total client-side JavaScript code now amounts to:
+在客户端中，我们将会捕获到到 chat message event，然后在页面中进行相应的操作。完
+整的代码如下所示：
 
 <script>
   $(function () {
@@ -267,24 +257,22 @@ the page. The total client-side JavaScript code now amounts to:
   });
 </script>
 
-And that completes our chat application, in about 20 lines of code! This is what
-it looks like:
+至此我们的聊天小程序就完成了，仅仅只需要 20 行代码。够简单吧。
 
-## Homework
+## 家庭作业
 
-Here are some ideas to improve the application:
+以下是改进应用程序的一些想法：
 
-* Broadcast a message to connected users when someone connects or disconnects
-* Add support for nicknames
-* Don’t send the same message to the user that sent it himself. Instead, append
-  the message directly as soon as he presses enter.
-* Add “{user} is typing” functionality
-* Show who’s online Add private messaging
-* Share your improvements!
+* 当有人连接或断开连接时，将消息广播给连接的所有用户。
+* 支持昵称。
+* 不要向发送它的用户发送相同的消息。相反，他一按回车就直接追加信息。
+* 加入 “{ 用户 } 正在输入 ...” 功能。
+* 显示在线人，并支持发送私聊。
+* 分享你的改进成果。
 
-## Getting this example
+## 获取完整示例代码
 
-You can find it on GitHub here.
+Github 地址：
 
 ```bash
 $ git clone https://github.com/socketio/chat-example.git
