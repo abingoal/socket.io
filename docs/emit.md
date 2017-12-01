@@ -1,6 +1,6 @@
 ## Emit 备忘单
 
-```js
+```javascript
 io.on('connect', onConnect);
 
 function onConnect(socket){
